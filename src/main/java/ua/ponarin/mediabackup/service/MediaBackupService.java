@@ -39,7 +39,11 @@ public class MediaBackupService {
 
         var portableDeviceFilesToBackup = retainNewFiles(portableDeviceFiles, storageDeviceFiles);
         log.info("Found {} new files to backup", portableDeviceFilesToBackup.size());
-        portableDeviceFileRepository.backupFiles(portableDeviceFilesToBackup, basePathOnStorageDevice, yearBasedStoreStrategy);
+        if (portableDeviceFilesToBackup.size() > 0) {
+            portableDeviceFileRepository.backupFiles(portableDeviceFilesToBackup, basePathOnStorageDevice, yearBasedStoreStrategy);
+        } else {
+            log.info("There is nothing to backup. Done!");
+        }
     }
 
     private List<Path> retainNewFiles(List<Path> portableDeviceFiles, List<Path> storageDeviceFiles) {
