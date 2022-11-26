@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 public class MediaSortApplication {
     public static void main(String[] args) throws IOException {
-        var basePath = Path.of("/Volumes/Backup/Backup/Huawei P30/Camera");
+        var basePath = Path.of("/Volumes/Backup/Backup/HuaweiP30/Camera");
         var yearBaseStoreStrategy = new YearBasedStoreStrategy();
 
         List<Path> paths;
