@@ -41,3 +41,7 @@ public class MediaBackupApplication implements CommandLineRunner {
         return applicationArguments.containsOption(BASE_PATH_ON_PORTABLE_DEVICE_CLI_OPTION) && applicationArguments.containsOption(BASE_PATH_ON_STORAGE_DEVICE_CLI_OPTION);
     }
 }
+/*
+* Example application parameters:
+* --base-path-on-portable-device=/storage/self/primary/DCIM/Camera --base-path-on-storage-device=/Volumes/Backup/Backup/HuaweiP30/Camera
+* */
