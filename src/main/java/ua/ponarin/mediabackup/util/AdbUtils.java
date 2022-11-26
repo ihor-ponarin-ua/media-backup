@@ -14,10 +14,10 @@ public class AdbUtils {
     @SneakyThrows
     public List<String> executeAdbCommand(String adbCommand) {
         var process = Runtime.getRuntime().exec(adbCommand);
-        var exitCode = process.waitFor();
         var consoleOutput = IOUtils.readLines(process.getInputStream(), StandardCharsets.UTF_8);
+        var exitCode = process.waitFor();
         if (exitCode != 0) {
-            log.error("Couldn't copy file. Command: '{}'. Console output: {}", adbCommand, consoleOutput);
+            log.error("Failed to execute adb command: '{}'. Console output: {}", adbCommand, consoleOutput);
         }
         return consoleOutput;
     }
