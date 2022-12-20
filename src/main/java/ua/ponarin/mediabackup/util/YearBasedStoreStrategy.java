@@ -1,17 +1,14 @@
 package ua.ponarin.mediabackup.util;
 
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.function.BiFunction;
 import java.util.regex.Pattern;
 
 @Component
-@Log4j2
-public class YearBasedStoreStrategy implements BiFunction<Path, Path, Path> {
+public class YearBasedStoreStrategy implements StoreStrategy {
     private static final Pattern DATE_STATEMENT_PATTERN = Pattern.compile(".*(\\d{8})_\\d{6}");
     private static final Integer DATE_STATEMENT_GROUP_NUMBER = 1;
     private static final DateTimeFormatter DEFAULT_DATE_FORMATTER = DateTimeFormatter.BASIC_ISO_DATE;
@@ -26,9 +23,15 @@ public class YearBasedStoreStrategy implements BiFunction<Path, Path, Path> {
             var year = Integer.valueOf(localDate.getYear());
             return Path.of(basePathOnStorageDevice.toString(), year.toString(), pathToFileOnPortableDevice.getFileName().toString());
         } else {
-            log.warn("File with the following path on the portable device won't be copied, cause it doesn't match to the date statement pattern ({}): {}", DATE_STATEMENT_PATTERN, pathToFileOnPortableDevice);
-            throw new RuntimeException("DateStatementPattern doesn't match");
+            throw new IllegalArgumentException(String.format("The filename: '%s' in the path: '%s' doesn't match the pattern",
+                    pathToFileOnPortableDevice.getFileName(),
+                    pathToFileOnPortableDevice));
         }
+    }
+
+    @Override
+    public boolean isApplicable(Path path) {
+        return DATE_STATEMENT_PATTERN.matcher(path.getFileName().toString()).find();
     }
 
     @Override
