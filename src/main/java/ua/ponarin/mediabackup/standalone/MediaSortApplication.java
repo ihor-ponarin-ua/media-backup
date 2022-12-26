@@ -3,7 +3,7 @@ package ua.ponarin.mediabackup.standalone;
 import lombok.extern.log4j.Log4j2;
 import me.tongfei.progressbar.ProgressBarBuilder;
 import org.apache.commons.lang3.StringUtils;
-import ua.ponarin.mediabackup.util.YearBasedStoreStrategy;
+import ua.ponarin.mediabackup.util.FileNameYearBasedStoreStrategy;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -18,7 +18,7 @@ public class MediaSortApplication {
         log.info("Application start");
         var basePath = Path.of("/Volumes/Backup/Backup/HuaweiP20/Camera");
         var storeStrategyRejectedFiles = Path.of("storeStrategyRejectedFiles.txt");
-        var yearBaseStoreStrategy = new YearBasedStoreStrategy();
+        var yearBaseStoreStrategy = new FileNameYearBasedStoreStrategy();
 
         log.info("Loading files from external drive...");
         List<Path> paths;

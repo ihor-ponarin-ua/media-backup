@@ -10,7 +10,7 @@ import ua.ponarin.mediabackup.repository.StorageDeviceFileRepository;
 import ua.ponarin.mediabackup.repository.PortableDeviceFileRepository;
 import ua.ponarin.mediabackup.util.AdbUtils;
 import ua.ponarin.mediabackup.util.StoreStrategy;
-import ua.ponarin.mediabackup.util.YearBasedStoreStrategy;
+import ua.ponarin.mediabackup.util.FileNameYearBasedStoreStrategy;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,7 +33,7 @@ public class MediaBackupService {
     private final PortableDeviceFileRepository portableDeviceFileRepository;
     private final StorageDeviceFileRepository storageDeviceFileRepository;
     private final ExecutorService executorService;
-    private final YearBasedStoreStrategy yearBasedStoreStrategy;
+    private final FileNameYearBasedStoreStrategy fileNameYearBasedStoreStrategy;
 
     @SneakyThrows
     public void backupMediaFiles(Path basePathOnPortableDevice, Path basePathOnStorageDevice) {
@@ -44,13 +44,13 @@ public class MediaBackupService {
 
         log.info("Found {} new files to backup", portableDeviceFilesToBackup.size());
         var groupedPortableDeviceFiles = portableDeviceFilesToBackup.parallelStream()
-                .collect(Collectors.groupingBy(yearBasedStoreStrategy::isApplicable));
+                .collect(Collectors.groupingBy(fileNameYearBasedStoreStrategy::isApplicable));
         var storeStrategyAcceptedPortableDeviceFiles = groupedPortableDeviceFiles.get(true);
         var storeStrategyRejectedPortableDeviceFiles = groupedPortableDeviceFiles.get(false);
 
         if (storeStrategyAcceptedPortableDeviceFiles.size() > 0) {
             log.info("Fount {} files that successfully passed the sore strategy filter", storeStrategyAcceptedPortableDeviceFiles.size());
-            backupFiles(storeStrategyAcceptedPortableDeviceFiles, basePathOnStorageDevice, yearBasedStoreStrategy);
+            backupFiles(storeStrategyAcceptedPortableDeviceFiles, basePathOnStorageDevice, fileNameYearBasedStoreStrategy);
             log.info("Done!");
         } else {
             log.info("There is nothing to backup. Done!");

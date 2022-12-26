@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.regex.Pattern;
 
 @Component
-public class YearBasedStoreStrategy implements StoreStrategy {
+public class FileNameYearBasedStoreStrategy implements StoreStrategy {
     private static final Pattern DATE_STATEMENT_PATTERN = Pattern.compile(".*(\\d{8})_\\d{6}");
     private static final Integer DATE_STATEMENT_GROUP_NUMBER = 1;
     private static final DateTimeFormatter DEFAULT_DATE_FORMATTER = DateTimeFormatter.BASIC_ISO_DATE;
@@ -36,7 +36,7 @@ public class YearBasedStoreStrategy implements StoreStrategy {
 
     @Override
     public String toString() {
-        return "YearBasedStorageStrategy";
+        return "FileNameYearBasedStoreStrategy";
     }
 }
 /*
