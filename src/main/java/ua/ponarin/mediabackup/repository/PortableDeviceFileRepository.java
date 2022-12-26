@@ -12,12 +12,10 @@ import java.util.stream.Collectors;
 @Repository
 @Log4j2
 public class PortableDeviceFileRepository {
-    private static final String ADB_FIND_TEMPLATE = "adb shell find %s -type f -maxdepth 1";
-
     @SneakyThrows
     public List<Path> listFiles(Path basePath) {
         log.info("Loading files on the portable device with the base path: {}", basePath);
-        return AdbUtils.executeAdbCommand(String.format(ADB_FIND_TEMPLATE, basePath.toString())).stream()
+        return AdbUtils.find(basePath, 1).stream()
                 .map(Path::of)
                 .collect(Collectors.toList());
     }

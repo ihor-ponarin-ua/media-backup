@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Log4j2
 public class MediaBackupService {
-    private static final String ADB_PULL_TEMPLATE = "adb pull %s %s";
     private static final String PROGRESS_BAR_TITLE = "MediaBackup Progress";
     private static final Integer PROGRESS_BAR_MAX_RENDERING_LENGTH = 130;
     private static final Integer PROGRESS_BAR_UPDATE_INTERVAL = 100;
@@ -108,7 +107,7 @@ public class MediaBackupService {
                 try {
                     var storePath = storeStrategy.apply(pathToFileOnPortableDevice, basePathOnStorageDevice);
                     Files.createDirectories(storePath.getParent());
-                    AdbUtils.executeAdbCommand(String.format(ADB_PULL_TEMPLATE, pathToFileOnPortableDevice, storePath));
+                    AdbUtils.pull(pathToFileOnPortableDevice, storePath);
                 } catch (IOException e) {
                     log.error("Unable to create a directory", e);
                     throw new RuntimeException(e);
