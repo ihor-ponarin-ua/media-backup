@@ -10,7 +10,7 @@ import ua.ponarin.mediabackup.repository.StorageDeviceFileRepository;
 import ua.ponarin.mediabackup.repository.PortableDeviceFileRepository;
 import ua.ponarin.mediabackup.util.AdbUtils;
 import ua.ponarin.mediabackup.component.store.strategy.StoreStrategy;
-import ua.ponarin.mediabackup.component.store.strategy.FileNameYearBasedStoreStrategy;
+import ua.ponarin.mediabackup.component.store.strategy.FileNameMonthAndYearBasedStoreStrategy;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -32,7 +32,7 @@ public class MediaBackupService {
     private final PortableDeviceFileRepository portableDeviceFileRepository;
     private final StorageDeviceFileRepository storageDeviceFileRepository;
     private final ExecutorService executorService;
-    private final FileNameYearBasedStoreStrategy fileNameYearBasedStoreStrategy;
+    private final FileNameMonthAndYearBasedStoreStrategy fileNameYearBasedStoreStrategy;
 
     @SneakyThrows
     public void backupMediaFiles(Path basePathOnPortableDevice, Integer portableDeviceFileLookupDepth, Path basePathOnStorageDevice) {
