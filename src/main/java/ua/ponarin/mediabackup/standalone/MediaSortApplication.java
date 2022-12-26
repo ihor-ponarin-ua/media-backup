@@ -3,7 +3,7 @@ package ua.ponarin.mediabackup.standalone;
 import lombok.extern.log4j.Log4j2;
 import me.tongfei.progressbar.ProgressBarBuilder;
 import org.apache.commons.lang3.StringUtils;
-import ua.ponarin.mediabackup.util.FileNameYearBasedStoreStrategy;
+import ua.ponarin.mediabackup.component.store.strategy.FileNameYearBasedStoreStrategy;
 
 import java.io.IOException;
 import java.nio.file.Files;

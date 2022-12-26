@@ -1,4 +1,4 @@
-package ua.ponarin.mediabackup.util;
+package ua.ponarin.mediabackup.component.store.strategy;
 
 import org.springframework.stereotype.Component;
 

@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import ua.ponarin.mediabackup.repository.StorageDeviceFileRepository;
 import ua.ponarin.mediabackup.repository.PortableDeviceFileRepository;
 import ua.ponarin.mediabackup.util.AdbUtils;
-import ua.ponarin.mediabackup.util.StoreStrategy;
-import ua.ponarin.mediabackup.util.FileNameYearBasedStoreStrategy;
+import ua.ponarin.mediabackup.component.store.strategy.StoreStrategy;
+import ua.ponarin.mediabackup.component.store.strategy.FileNameYearBasedStoreStrategy;
 
 import java.io.IOException;
 import java.nio.file.Files;
