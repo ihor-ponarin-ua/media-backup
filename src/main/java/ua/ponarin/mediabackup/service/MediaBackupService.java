@@ -35,11 +35,11 @@ public class MediaBackupService {
     private final FileNameYearBasedStoreStrategy fileNameYearBasedStoreStrategy;
 
     @SneakyThrows
-    public void backupMediaFiles(Path basePathOnPortableDevice, Path basePathOnStorageDevice) {
+    public void backupMediaFiles(Path basePathOnPortableDevice, Integer portableDeviceFileLookupDepth, Path basePathOnStorageDevice) {
         log.info("Start to backup media files. Base path on the portable device: '{}'. Base path on the storage device: '{}'",
                 basePathOnPortableDevice, basePathOnStorageDevice);
 
-        var portableDeviceFilesToBackup = findNewFilesToBackup(basePathOnPortableDevice, basePathOnStorageDevice);
+        var portableDeviceFilesToBackup = findNewFilesToBackup(basePathOnPortableDevice, portableDeviceFileLookupDepth, basePathOnStorageDevice);
 
         log.info("Found {} new files to backup", portableDeviceFilesToBackup.size());
         var groupedPortableDeviceFiles = portableDeviceFilesToBackup.parallelStream()
@@ -63,9 +63,9 @@ public class MediaBackupService {
     }
 
     @SneakyThrows
-    private List<Path> findNewFilesToBackup(Path basePathOnPortableDevice, Path basePathOnStorageDevice) {
+    private List<Path> findNewFilesToBackup(Path basePathOnPortableDevice, Integer portableDeviceFileLookupDepth, Path basePathOnStorageDevice) {
         var portableDeviceFilesFuture = executorService
-                .submit(() -> portableDeviceFileRepository.listFiles(basePathOnPortableDevice));
+                .submit(() -> portableDeviceFileRepository.listFiles(basePathOnPortableDevice, portableDeviceFileLookupDepth));
         var storageDeviceFilesFuture = executorService
                 .submit(() -> storageDeviceFileRepository.listFilesRecursively(basePathOnStorageDevice));
 

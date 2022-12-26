@@ -16,6 +16,7 @@ import java.nio.file.Path;
 public class MediaBackupApplication implements CommandLineRunner {
     private static final String BASE_PATH_ON_PORTABLE_DEVICE_CLI_OPTION = "base-path-on-portable-device";
     private static final String BASE_PATH_ON_STORAGE_DEVICE_CLI_OPTION = "base-path-on-storage-device";
+    private static final Integer PORTABLE_DEVICE_FILE_LOOKUP_DEPTH = 1;
     private static final Integer FIRST_LIST_ELEMENT = 0;
     private final ApplicationArguments applicationArguments;
     private final MediaBackupService mediaBackupService;
@@ -31,6 +32,7 @@ public class MediaBackupApplication implements CommandLineRunner {
         if (validateCliArguments()) {
             mediaBackupService.backupMediaFiles(
                     Path.of(applicationArguments.getOptionValues(BASE_PATH_ON_PORTABLE_DEVICE_CLI_OPTION).get(FIRST_LIST_ELEMENT)),
+                    PORTABLE_DEVICE_FILE_LOOKUP_DEPTH,
                     Path.of(applicationArguments.getOptionValues(BASE_PATH_ON_STORAGE_DEVICE_CLI_OPTION).get(FIRST_LIST_ELEMENT)));
         } else {
             log.error("Required CLI arguments ({}, {}) are missing. Please use the following syntax: {}. Also avoid using whitespaces in the paths", BASE_PATH_ON_PORTABLE_DEVICE_CLI_OPTION, BASE_PATH_ON_STORAGE_DEVICE_CLI_OPTION, String.format("--%s=/storage/self/primary/DCIM/Camera --%s=/Users/ihor/Documents/mediaBackup", BASE_PATH_ON_PORTABLE_DEVICE_CLI_OPTION, BASE_PATH_ON_STORAGE_DEVICE_CLI_OPTION));
