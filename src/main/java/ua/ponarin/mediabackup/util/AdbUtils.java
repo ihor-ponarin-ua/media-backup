@@ -13,7 +13,7 @@ import java.util.List;
 @Log4j2
 public class AdbUtils {
     private static final String FIND_TEMPLATE = "adb shell find %s -type f -maxdepth %s";
-    private static final String PULL_TEMPLATE = "adb pull %s %s";
+    private static final String PULL_TEMPLATE = "adb pull -a %s %s"; // -a preserves file's timestamp
 
     public List<String> find(Path basePath, Integer depth) {
         return executeAdbCommand(String.format(FIND_TEMPLATE, basePath.toString(), depth));
