@@ -1,6 +1,5 @@
 package ua.ponarin.mediabackup.util;
 
-import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.IOUtils;
@@ -23,14 +22,18 @@ public class AdbUtils {
         executeAdbCommand(String.format(PULL_TEMPLATE, pathToFileOnPortableDevice.toString(), pathToFileOnStorageDevice.toString()));
     }
 
-    @SneakyThrows
     private List<String> executeAdbCommand(String adbCommand) {
-        var process = Runtime.getRuntime().exec(adbCommand);
-        var consoleOutput = IOUtils.readLines(process.getInputStream(), StandardCharsets.UTF_8);
-        var exitCode = process.waitFor();
-        if (exitCode != 0) {
-            log.error("Failed to execute adb command: '{}'. Console output: {}", adbCommand, consoleOutput);
+        try {
+            var process = Runtime.getRuntime().exec(adbCommand);
+            var consoleOutput = IOUtils.readLines(process.getInputStream(), StandardCharsets.UTF_8);
+            var exitCode = process.waitFor();
+            if (exitCode != 0) {
+                log.error("Failed to execute adb command: '{}'. Console output: {}", adbCommand, consoleOutput);
+            }
+            return consoleOutput;
+        } catch (Exception exception) {
+            log.error("Something went wrong! Maybe you need to enable debug mode on your phone or authorize a debug connection.", exception);
+            throw new RuntimeException(exception);
         }
-        return consoleOutput;
     }
 }
