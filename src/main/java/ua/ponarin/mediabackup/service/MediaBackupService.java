@@ -42,18 +42,18 @@ public class MediaBackupService {
         log.info("Found {} new files to backup", portableDeviceFilesToBackup.size());
         var groupedPortableDeviceFiles = portableDeviceFilesToBackup.parallelStream()
                 .collect(Collectors.groupingBy(fileNameYearBasedStoreStrategy::isApplicable));
-        var storeStrategyAcceptedPortableDeviceFiles = groupedPortableDeviceFiles.get(true);
-        var storeStrategyRejectedPortableDeviceFiles = groupedPortableDeviceFiles.get(false);
+        var storeStrategyAcceptedPortableDeviceFiles = groupedPortableDeviceFiles.getOrDefault(true, List.of());
+        var storeStrategyRejectedPortableDeviceFiles = groupedPortableDeviceFiles.getOrDefault(false, List.of());
 
         if (storeStrategyAcceptedPortableDeviceFiles.size() > 0) {
-            log.info("Fount {} files that successfully passed the sore strategy filter", storeStrategyAcceptedPortableDeviceFiles.size());
+            log.info("Found {} files that successfully passed the sore strategy filter", storeStrategyAcceptedPortableDeviceFiles.size());
             backupFiles(storeStrategyAcceptedPortableDeviceFiles, basePathOnStorageDevice, fileNameYearBasedStoreStrategy);
             log.info("Done!");
         } else {
             log.info("There is nothing to backup. Done!");
         }
 
-        if (storeStrategyRejectedPortableDeviceFiles != null) {
+        if (storeStrategyRejectedPortableDeviceFiles.size() > 0) {
             log.warn("Found {} files that failed to pass the store strategy filter. The list of the files will be stored in the file '{}'",
                     storeStrategyRejectedPortableDeviceFiles.size(), STORE_STRATEGY_REJECTED_FILES_PATH.toAbsolutePath());
             saveRejectedByStoreStrategyFiles(storeStrategyRejectedPortableDeviceFiles);
