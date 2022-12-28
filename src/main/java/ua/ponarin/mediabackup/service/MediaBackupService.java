@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import me.tongfei.progressbar.ProgressBarBuilder;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ua.ponarin.mediabackup.repository.StorageDeviceFileRepository;
 import ua.ponarin.mediabackup.repository.PortableDeviceFileRepository;
@@ -24,10 +23,9 @@ import java.util.stream.Collectors;
 @Log4j2
 public class MediaBackupService {
     private static final String PROGRESS_BAR_TITLE = "MediaBackup Progress";
-    private static final Integer PROGRESS_BAR_MAX_RENDERING_LENGTH = 130;
+    private static final Integer PROGRESS_BAR_MAX_RENDERING_LENGTH = 140;
     private static final Integer PROGRESS_BAR_UPDATE_INTERVAL = 100;
-    private static final String CURRENT_FILE_MESSAGE_TEMPLATE = "Current file: %s";
-    private static final Integer CURRENT_FILE_NAME_MAX_LENGTH = 23;
+    private static final String CURRENT_FILE_MESSAGE_TEMPLATE = "Current file: %-45s";
     private static final Path STORE_STRATEGY_REJECTED_FILES_PATH = Path.of("storeStrategyRejectedFiles.txt");
     private final PortableDeviceFileRepository portableDeviceFileRepository;
     private final StorageDeviceFileRepository storageDeviceFileRepository;
@@ -100,10 +98,7 @@ public class MediaBackupService {
             files.forEach(pathToFileOnPortableDevice -> {
                 progressBar.step();
                 progressBar.setExtraMessage(String.format(
-                        CURRENT_FILE_MESSAGE_TEMPLATE,
-                        StringUtils.abbreviate(
-                                pathToFileOnPortableDevice.getFileName().toString(),
-                                CURRENT_FILE_NAME_MAX_LENGTH)));
+                        CURRENT_FILE_MESSAGE_TEMPLATE, pathToFileOnPortableDevice.getFileName().toString()));
                 try {
                     var storePath = storeStrategy.apply(pathToFileOnPortableDevice, basePathOnStorageDevice);
                     Files.createDirectories(storePath.getParent());
