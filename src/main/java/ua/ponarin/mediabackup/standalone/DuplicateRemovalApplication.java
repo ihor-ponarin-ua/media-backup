@@ -40,31 +40,33 @@ public class DuplicateRemovalApplication {
                 .collect(Collectors.toList());
         log.info("Found {} potential duplicate files", potentialDuplicateFiles.size());
 
-        var duplicateFiles = potentialDuplicateFiles.parallelStream()
-                .map(Path::toString)
-                .map(duplicateNumberPattern::matcher)
-                .filter(Matcher::find)
-                .filter(matcher -> regularFiles.contains(Path.of(matcher.group(1) + matcher.group(3))))
-                .map(matcher -> Path.of(matcher.group(1) + matcher.group(2) + matcher.group(3)))
-                .collect(Collectors.toList());
-        log.info("Found {} duplicate files", duplicateFiles.size());
+        if (potentialDuplicateFiles.size() != 0) {
+            var duplicateFiles = potentialDuplicateFiles.parallelStream()
+                    .map(Path::toString)
+                    .map(duplicateNumberPattern::matcher)
+                    .filter(Matcher::find)
+                    .filter(matcher -> regularFiles.contains(Path.of(matcher.group(1) + matcher.group(3))))
+                    .map(matcher -> Path.of(matcher.group(1) + matcher.group(2) + matcher.group(3)))
+                    .collect(Collectors.toList());
+            log.info("Found {} duplicate files", duplicateFiles.size());
 
-        var progressBarBuilder = new ProgressBarBuilder()
-                .setTaskName("Deleting")
-                .setInitialMax(duplicateFiles.size())
-                .setUpdateIntervalMillis(100)
-                .setMaxRenderedLength(135);
+            var progressBarBuilder = new ProgressBarBuilder()
+                    .setTaskName("Deleting")
+                    .setInitialMax(duplicateFiles.size())
+                    .setUpdateIntervalMillis(100)
+                    .setMaxRenderedLength(135);
 
-        try (var progressBar = progressBarBuilder.build()) {
-            duplicateFiles.forEach(path -> {
-                progressBar.step();
-                progressBar.setExtraMessage(String.format("Current file: %-45s", path.getFileName().toString()));
-                try {
-                    Files.deleteIfExists(path);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+            try (var progressBar = progressBarBuilder.build()) {
+                duplicateFiles.forEach(path -> {
+                    progressBar.step();
+                    progressBar.setExtraMessage(String.format("Current file: %-45s", path.getFileName().toString()));
+                    try {
+                        Files.deleteIfExists(path);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+            }
         }
 
         log.info("Application completed!");
