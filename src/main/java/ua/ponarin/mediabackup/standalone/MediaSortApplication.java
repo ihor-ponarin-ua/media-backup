@@ -3,7 +3,7 @@ package ua.ponarin.mediabackup.standalone;
 import lombok.extern.log4j.Log4j2;
 import me.tongfei.progressbar.ProgressBarBuilder;
 import org.apache.commons.lang3.StringUtils;
-import ua.ponarin.mediabackup.component.store.strategy.FileNameMonthAndYearBasedStoreStrategy;
+import ua.ponarin.mediabackup.standalone.store.strategy.StoreStrategyChain;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,18 +16,20 @@ import java.util.stream.Stream;
 public class MediaSortApplication {
     public static void main(String[] args) throws IOException {
         log.info("Application start");
-        var basePath = Path.of("/Volumes/Backup/Backup/HuaweiP20/Camera");
+        var basePath = Path.of("/Volumes/Backup/Backup/HuaweiP30/Camera");
+        var fileLookupDepth = 2;
         var storeStrategyRejectedFiles = Path.of("storeStrategyRejectedFiles.txt");
-        var yearBaseStoreStrategy = new FileNameMonthAndYearBasedStoreStrategy();
+        var storeStrategyChain = new StoreStrategyChain();
 
         log.info("Loading files from external drive...");
         List<Path> paths;
-        try (Stream<Path> stream = Files.walk(basePath, 1)) {
+        try (Stream<Path> stream = Files.walk(basePath, fileLookupDepth)) {
             paths = stream.filter(Files::isRegularFile).collect(Collectors.toList());
         }
         log.info("Found {} files.", paths.size());
+        log.info("Define supported files...");
         var storageSupportBasedGroupedFiles = paths.parallelStream()
-                .collect(Collectors.groupingBy(yearBaseStoreStrategy::isApplicable));
+                .collect(Collectors.groupingBy(storeStrategyChain::isApplicable));
         var storeStrategyAcceptedPortableDeviceFiles = storageSupportBasedGroupedFiles.get(true);
         var storeStrategyRejectedPortableDeviceFiles = storageSupportBasedGroupedFiles.get(false);
 
@@ -54,7 +56,7 @@ public class MediaSortApplication {
                     progressBar.step();
                     progressBar.setExtraMessage("Current file: " + StringUtils.abbreviate(path.getFileName().toString(), 23));
                     try {
-                        var newPath = yearBaseStoreStrategy.apply(path, basePath);
+                        var newPath = storeStrategyChain.apply(path, basePath);
                         Files.createDirectories(newPath.getParent());
                         Files.move(path, newPath);
                     } catch (IOException e) {
