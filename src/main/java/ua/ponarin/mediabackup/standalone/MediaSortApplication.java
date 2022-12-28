@@ -2,7 +2,6 @@ package ua.ponarin.mediabackup.standalone;
 
 import lombok.extern.log4j.Log4j2;
 import me.tongfei.progressbar.ProgressBarBuilder;
-import org.apache.commons.lang3.StringUtils;
 import ua.ponarin.mediabackup.standalone.store.strategy.StoreStrategyChain;
 
 import java.io.IOException;
@@ -49,12 +48,12 @@ public class MediaSortApplication {
                     .setTaskName("Sorting")
                     .setInitialMax(paths.size())
                     .setUpdateIntervalMillis(100)
-                    .setMaxRenderedLength(130);
+                    .setMaxRenderedLength(140);
 
             try (var progressBar = progressBarBuilder.build()) {
                 storeStrategyAcceptedPortableDeviceFiles.forEach(path -> {
                     progressBar.step();
-                    progressBar.setExtraMessage("Current file: " + StringUtils.abbreviate(path.getFileName().toString(), 23));
+                    progressBar.setExtraMessage(String.format("Current file: %-45s", path.getFileName().toString()));
                     try {
                         var newPath = storeStrategyChain.apply(path, basePath);
                         Files.createDirectories(newPath.getParent());

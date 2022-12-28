@@ -54,7 +54,7 @@ public class DuplicateRemovalApplication {
                     .setTaskName("Deleting")
                     .setInitialMax(duplicateFiles.size())
                     .setUpdateIntervalMillis(100)
-                    .setMaxRenderedLength(135);
+                    .setMaxRenderedLength(140);
 
             try (var progressBar = progressBarBuilder.build()) {
                 duplicateFiles.forEach(path -> {
